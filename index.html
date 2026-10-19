@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TradePro — Paper Trading</title>
+<style>
+:root{--bg:#0b1220;--panel:#121c2e;--panel2:#172338;--text:#edf3ff;--muted:#91a2bd;--green:#21c58e;--red:#ff667d;--line:#263650;--blue:#6da8ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,Arial,sans-serif}
+button,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+.app{max-width:1250px;margin:auto;padding:22px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{font-size:25px;font-weight:850;letter-spacing:-.8px}.brand span{color:var(--green)}.tag{color:var(--muted);font-size:12px}.badge{border:1px solid #286b5a;color:#6ee7bf;background:#10352f;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}
+.hero{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:22px 0}.hero h1{font-size:clamp(26px,4vw,38px);margin:0 0 5px;letter-spacing:-1px}.hero p{color:var(--muted);margin:0}.balance{background:linear-gradient(135deg,#143e3a,#16263a);border:1px solid #286257;border-radius:16px;padding:18px 22px;min-width:220px}.balance small{color:#a4cfc3}.balance strong{display:block;font-size:27px;margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}.label{color:var(--muted);font-size:13px}.value{font-size:23px;font-weight:800;margin:6px 0}.positive{color:var(--green)}.negative{color:var(--red)}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px}.section-title{display:flex;justify-content:space-between;align-items:center;margin:0 0 14px;font-size:17px}.search{width:100%;background:#0b1423;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:12px;outline:none}.search:focus{border-color:var(--blue)}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--muted);font-size:12px;font-weight:600;padding:10px 6px;border-bottom:1px solid var(--line)}td{padding:13px 6px;border-bottom:1px solid #202d43}tr:last-child td{border-bottom:0}.symbol{font-weight:800}.company{font-size:12px;color:var(--muted)}.price{font-weight:750;white-space:nowrap}.change{font-size:12px}.row-actions{display:flex;gap:6px}.buy{background:var(--green);color:#06291f}.sell{background:#442331;color:#ff9ab0}.watch{background:#24324a;color:#c6d8f6;padding:7px 9px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}.tab{background:var(--panel2);color:var(--muted)}.tab.active{background:#24443f;color:#7ce6c1}
+.chartbox{height:220px;background:linear-gradient(180deg,#10251f,#111b2b);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:8px 0 14px}.chartbox svg{width:100%;height:100%}.hint{color:var(--muted);font-size:12px}.holding{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.holding:last-child{border:0}.holding-name{font-weight:750}.holding-sub{font-size:12px;color:var(--muted)}.empty{color:var(--muted);text-align:center;padding:24px 0}.notice{margin-top:18px;border:1px solid #574b2d;background:#292516;color:#e9dca8;padding:12px 14px;border-radius:12px;font-size:12px}
+.modal-back{position:fixed;inset:0;background:#020611c9;display:none;align-items:center;justify-content:center;padding:20px}.modal{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}.modal h2{margin:0 0 6px}.modal input{width:100%;background:#0b1423;border:1px solid var(--line);color:var(--text);padding:12px;border-radius:10px;margin:8px 0 14px}.modal-actions{display:flex;gap:8px}.modal-actions button{flex:1}.cancel{background:#26344a;color:var(--text)}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#eafbf5;color:#07382a;padding:12px 18px;border-radius:12px;font-weight:750;display:none;box-shadow:0 10px 40px #0008}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}.hero{align-items:stretch;flex-direction:column}.balance{min-width:0}.app{padding:14px}.table-wrap{overflow-x:auto}table{min-width:540px}}
+@media(max-width:420px){.stats{gap:8px}.card{padding:13px}.value{font-size:19px}.top{align-items:flex-start}.badge{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div><div class="brand">Trade<span>Pro</span></div><div class="tag">Your market. Your practice. Your progress.</div></div><div class="badge">● PAPER TRADING</div></header>
+<section class="hero"><div><h1>Market at a glance</h1><p>Practice your trading strategy with virtual money—no real orders.</p></div><div class="balance"><small>Virtual buying power</small><strong id="cash">₹1,00,000.00</strong><small>Demo account · not real money</small></div></section>
+<section class="stats">
+<div class="card"><div class="label">Portfolio value</div><div class="value" id="portfolioValue">₹1,00,000</div><div class="hint">Cash + holdings</div></div>
+<div class="card"><div class="label">Total P&amp;L</div><div class="value" id="pnl">₹0.00</div><div class="hint">Since starting</div></div>
+<div class="card"><div class="label">Market mood</div><div class="value positive">Positive ↗</div><div class="hint">Illustrative demo data</div></div>
+<div class="card"><div class="label">Open positions</div><div class="value" id="positionCount">0</div><div class="hint">Stocks held</div></div>
+</section>
+<div class="layout">
+<section class="card"><div class="section-title"><span>Stocks to explore</span><span class="hint">Sample prices</span></div><input id="search" class="search" placeholder="Search company or symbol…" aria-label="Search stocks">
+<div class="table-wrap"><table><thead><tr><th>STOCK</th><th>PRICE</th><th>CHANGE</th><th>ACTION</th></tr></thead><tbody id="stocks"></tbody></table></div>
+<div class="notice">Demo only: displayed prices are illustrative and are not live market data. Trades use virtual funds only.</div>
+</section>
+<div>
+<section class="card" style="margin-bottom:16px"><div class="section-title"><span>Market trend</span><span class="hint">Sample chart</span></div><div class="tabs"><button class="tab active" data-range="1D">1D</button><button class="tab" data-range="1W">1W</button><button class="tab" data-range="1M">1M</button></div><div class="chartbox"><svg viewBox="0 0 600 240" preserveAspectRatio="none" aria-label="Illustrative price line chart"><defs><linearGradient id="fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#21c58e" stop-opacity=".3"/><stop offset="100%" stop-color="#21c58e" stop-opacity="0"/></linearGradient></defs><path d="M0 190 L40 170 L80 180 L120 130 L160 145 L200 105 L240 125 L280 88 L320 105 L360 60 L400 78 L440 45 L480 65 L520 32 L560 48 L600 18 L600 240 L0 240 Z" fill="url(#fill)"/><path d="M0 190 L40 170 L80 180 L120 130 L160 145 L200 105 L240 125 L280 88 L320 105 L360 60 L400 78 L440 45 L480 65 L520 32 L560 48 L600 18" fill="none" stroke="#21c58e" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="hint">Illustrative trend only · not a real index feed</div></section>
+<section class="card"><div class="section-title"><span>Your portfolio</span><span class="hint">Virtual holdings</span></div><div id="holdings"><div class="empty">No holdings yet.<br>Choose a stock and tap Buy to practise.</div></div></section>
+</div>
+</div>
+</div>
+<div class="modal-back" id="modalBack"><div class="modal"><h2 id="modalTitle">Buy stock</h2><p id="modalDescription" class="hint"></p><label for="quantity">Quantity</label><input id="quantity" type="number" min="1" step="1" value="1"><p id="estimate" class="hint"></p><div class="modal-actions"><button class="cancel" id="cancel">Cancel</button><button class="buy" id="confirm">Confirm trade</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const initialCash=100000;
+const stocks=[
+ {symbol:"RELIANCE",name:"Reliance Industries",price:1425.50,change:1.24},
+ {symbol:"TCS",name:"Tata Consultancy Services",price:3180.20,change:.86},
+ {symbol:"INFY",name:"Infosys",price:1512.75,change:-.42},
+ {symbol:"HDFCBANK",name:"HDFC Bank",price:1765.10,change:.63},
+ {symbol:"ITC",name:"ITC Limited",price:438.65,change:-.18},
+ {symbol:"TATAMOTORS",name:"Tata Motors",price:725.30,change:2.17},
+ {symbol:"WIPRO",name:"Wipro",price:512.40,change:-.71},
+ {symbol:"SBIN",name:"State Bank of India",price:824.90,change:1.05}
+];
+let cash=initialCash, holdings={}, trade=null;
+const fmt=n=>"₹"+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const stockBy=s=>stocks.find(x=>x.symbol===s);
+function renderStocks(){const q=document.getElementById("search").value.toLowerCase();document.getElementById("stocks").innerHTML=stocks.filter(s=>(s.symbol+s.name).toLowerCase().includes(q)).map(s=>`<tr><td><div class="symbol">${s.symbol}</div><div class="company">${s.name}</div></td><td class="price">${fmt(s.price)}</td><td class="change ${s.change>=0?'positive':'negative'}">${s.change>=0?'+':''}${s.change.toFixed(2)}%</td><td><div class="row-actions"><button class="buy" onclick="openTrade('${s.symbol}','buy')">Buy</button><button class="sell" onclick="openTrade('${s.symbol}','sell')">Sell</button></div></td></tr>`).join("")}
+function renderPortfolio(){let market=0,cost=0,count=0;const items=Object.entries(holdings).filter(([s,h])=>h.qty>0);items.forEach(([s,h])=>{market+=h.qty*stockBy(s).price;cost+=h.qty*h.avg;count+=h.qty});const total=cash+market;const pnl=market-cost;document.getElementById("cash").textContent=fmt(cash);document.getElementById("portfolioValue").textContent=fmt(total);const pnlEl=document.getElementById("pnl");pnlEl.textContent=(pnl>=0?"+":"")+fmt(pnl);pnlEl.className="value "+(pnl>=0?"positive":"negative");document.getElementById("positionCount").textContent=items.length;const box=document.getElementById("holdings");if(!items.length){box.innerHTML='<div class="empty">No holdings yet.<br>Choose a stock and tap Buy to practise.</div>';return}box.innerHTML=items.map(([s,h])=>{const st=stockBy(s),val=h.qty*st.price,profit=val-h.qty*h.avg;return `<div class="holding"><div><div class="holding-name">${s} <span class="hint">× ${h.qty}</span></div><div class="holding-sub">Avg. price ${fmt(h.avg)}</div></div><div style="text-align:right"><div class="holding-name">${fmt(val)}</div><div class="${profit>=0?'positive':'negative'} holding-sub">${profit>=0?'+':''}${fmt(profit)}</div></div></div>`}).join("")}
+function openTrade(symbol,side){trade={symbol,side};const s=stockBy(symbol);document.getElementById("modalTitle").textContent=(side==="buy"?"Buy ":"Sell ")+symbol;document.getElementById("modalDescription").textContent=s.name+" · "+fmt(s.price)+" per share";document.getElementById("quantity").value=1;document.getElementById("modalBack").style.display="flex";updateEstimate()}
+function updateEstimate(){if(!trade)return;const qty=Math.max(0,Math.floor(Number(document.getElementById("quantity").value)||0));const s=stockBy(trade.symbol);document.getElementById("estimate").textContent="Estimated total: "+fmt(qty*s.price)+" · "+(trade.side==="buy"?"Available cash: "+fmt(cash):"Shares owned: "+((holdings[trade.symbol]||{}).qty||0))}
+function notify(msg){const t=document.getElementById("toast");t.textContent=msg;t.style.display="block";setTimeout(()=>t.style.display="none",2600)}
+document.getElementById("search").addEventListener("input",renderStocks);document.getElementById("quantity").addEventListener("input",updateEstimate);document.getElementById("cancel").onclick=()=>document.getElementById("modalBack").style.display="none";
+document.getElementById("confirm").onclick=()=>{if(!trade)return;const qty=Math.floor(Number(document.getElementById("quantity").value));const s=stockBy(trade.symbol);if(!Number.isFinite(qty)||qty<1){notify("Enter a quantity of at least 1.");return}if(trade.side==="buy"){const cost=qty*s.price;if(cost>cash){notify("Not enough virtual funds.");return}const h=holdings[trade.symbol]||{qty:0,avg:0};h.avg=(h.qty*h.avg+cost)/(h.qty+qty);h.qty+=qty;holdings[trade.symbol]=h;cash-=cost;notify("Practice buy completed — virtual funds only.")}else{const h=holdings[trade.symbol];if(!h||qty>h.qty){notify("You don't own enough shares to sell.");return}cash+=qty*s.price;h.qty-=qty;if(!h.qty)delete holdings[trade.symbol];notify("Practice sell completed — virtual funds only.")}document.getElementById("modalBack").style.display="none";renderPortfolio()};
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");notify("Sample chart range: "+b.dataset.range)});
+renderStocks();renderPortfolio();
+</script>
+</body></html>
